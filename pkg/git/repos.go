@@ -13,7 +13,7 @@ import (
 )
 
 // TODO: move this to some configuration file.
-const DevDir = "/Users/mickaelcarl/dev"
+var DevDir = path.Join(os.Getenv("HOME"), "dev")
 
 // TODO: does this need to be public?
 type Remote struct {
@@ -48,7 +48,7 @@ func NewRepository(name, url, mainBranch, pubKeyPath, privateKeyPath string) err
 			Name: "origin",
 			URL:  url,
 		},
-		PubKeyPath: pubKeyPath,
+		PubKeyPath:     pubKeyPath,
 		PrivateKeyPath: privateKeyPath,
 	}
 

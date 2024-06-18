@@ -8,6 +8,10 @@ Built using Go and [git2go](https://github.com/libgit2/git2go) (Go bindings for
 libgit2) (mostly), on top
 of [tview](https://github.com/rivo/tview)
 
+Currently it clones and manages repository in `~/dev`. For each repository, a
+directory is created, with a subdirectory per branch/worktree (including the
+main branch).
+
 ## Dependencies
 
 * For interactive patching, Git itself.
