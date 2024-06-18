@@ -1,6 +1,9 @@
 package git
 
 import (
+	"fmt"
+	"os/exec"
+	"strings"
 	"time"
 
 	git "github.com/libgit2/git2go/v36"
@@ -61,10 +64,25 @@ func (r *Repository) Commit(branch, message, parent string) error {
 	}
 	defer parentCommit.Free()
 
-	// TODO: read from gitconfig.
+	var name strings.Builder
+	cmd := exec.Command("git", "config", "--get", "user.name")
+	cmd.Dir = BranchPath(branch, r.Name)
+	cmd.Stdout = &name
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to get user name: %w", err)
+	}
+
+	var email strings.Builder
+	cmd = exec.Command("git", "config", "--get", "user.email")
+	cmd.Dir = BranchPath(branch, r.Name)
+	cmd.Stdout = &email
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("failed to get user email: %w", err)
+	}
+
 	signature := &git.Signature{
-		Name:  "Mickael Carl",
-		Email: "contact@carlm.org",
+		Name:  name.String(),
+		Email: email.String(),
 		When:  time.Now(),
 	}
 
