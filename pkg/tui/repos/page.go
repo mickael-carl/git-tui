@@ -1,6 +1,9 @@
 package repos
 
 import (
+	"os"
+	"path/filepath"
+
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 
@@ -37,6 +40,8 @@ func NewReposPage(state *util.State) *reposPage {
 		AddInputField("Name", "", 0, nil, nil).
 		AddInputField("URL", "", 0, nil, nil).
 		AddInputField("Main Branch Name", "", 0, nil, nil).
+		AddInputField("Public Key Path", filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa.pub"), 0, nil, nil).
+		AddInputField("Private Key Path", filepath.Join(os.Getenv("HOME"), ".ssh", "id_rsa"), 0, nil, nil).
 		AddButton("Create", rp.createRepo)
 	form.SetBorder(true)
 	rp.form = form

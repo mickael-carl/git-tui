@@ -22,8 +22,10 @@ type Remote struct {
 }
 
 type Config struct {
-	MainBranch string
-	Remote     Remote
+	MainBranch     string
+	Remote         Remote
+	PubKeyPath     string
+	PrivateKeyPath string
 }
 
 type Branch struct {
@@ -39,17 +41,15 @@ type Repository struct {
 	Branches []Branch
 }
 
-func NewRepository(
-	name string,
-	url string,
-	mainBranch string,
-) error {
+func NewRepository(name, url, mainBranch, pubKeyPath, privateKeyPath string) error {
 	config := Config{
 		MainBranch: mainBranch,
 		Remote: Remote{
 			Name: "origin",
 			URL:  url,
 		},
+		PubKeyPath: pubKeyPath,
+		PrivateKeyPath: privateKeyPath,
 	}
 
 	_, err := os.Open(repoPath(name))
@@ -72,8 +72,12 @@ func NewRepository(
 		return err
 	}
 
+	repo := Repository{
+		Config: config,
+	}
+
 	remoteCallbacks := git.RemoteCallbacks{
-		CredentialsCallback: credentialsCallback,
+		CredentialsCallback: repo.credentialsCallback,
 	}
 
 	options := git.FetchOptions{

@@ -28,7 +28,7 @@ func (r *Repository) Fetch() error {
 		defer remote.Free()
 
 		remoteCallbacks := git.RemoteCallbacks{
-			CredentialsCallback: credentialsCallback,
+			CredentialsCallback: r.credentialsCallback,
 		}
 
 		options := &git.FetchOptions{
@@ -43,12 +43,11 @@ func (r *Repository) Fetch() error {
 	return nil
 }
 
-func credentialsCallback(url, usernameFromURL string, allowedTypes git.CredentialType) (*git.Credential, error) {
-	// TODO: don't hardcode this.
+func (r *Repository) credentialsCallback(url, usernameFromURL string, allowedTypes git.CredentialType) (*git.Credential, error) {
 	return git.NewCredentialSSHKey(
 		"git",
-		"/Users/mickaelcarl/.ssh/github.pub",
-		"/Users/mickaelcarl/.ssh/github",
+		r.Config.PubKeyPath,
+		r.Config.PrivateKeyPath,
 		"",
 	)
 }
