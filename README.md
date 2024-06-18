@@ -14,7 +14,7 @@ main branch).
 
 ## Dependencies
 
-* For interactive patching, Git itself.
+* Git itself.
 * On macOS, git2go/libgit2 depends on pkg-config (`brew install pkg-config`).
 
 ## Building & Installing
