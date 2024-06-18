@@ -25,7 +25,7 @@ make install
 
 ## Why
 
-Existing Git TUIs are very unopinionated, don't necessarily support worktrees
-and don't adapt too well to my personal workflow.
-Also: I wanted to see if I could write a TUI in Go.
+Existing Git TUIs (e.g. [LazyGit](https://github.com/jesseduffield/lazygit)) are
+very unopinionated, don't necessarily support worktrees and don't adapt too well
+to my personal workflow. Also: I wanted to see if I could write a TUI in Go.
 
