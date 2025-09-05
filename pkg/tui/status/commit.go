@@ -136,3 +136,11 @@ func (s *statusPage) xxx() {
 		util.NewErrorWindow(s.state.Pages, "status-xxx-err", fmt.Errorf("Failed to create XXX commit: %v", err))
 	}
 }
+
+func (s *statusPage) push() {
+	if err := s.state.Repository.Push(s.state.Branch); err != nil {
+		util.NewErrorWindow(s.state.Pages, "status-push-err", fmt.Errorf("Failed to push: %v", err))
+	}
+
+	//TODO: needs success notification
+}

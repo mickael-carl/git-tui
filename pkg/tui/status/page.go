@@ -123,6 +123,11 @@ func NewStatusPage(state *util.State) *statusPage {
 			Description: "Patch",
 			Action:      sp.patch,
 		},
+		{
+			Key:         "P",
+			Description: "Push",
+			Action:      sp.push,
+		},
 	}
 
 	sp.keybindings = kbs
