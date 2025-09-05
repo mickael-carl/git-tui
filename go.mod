@@ -2,7 +2,7 @@ module github.com/mickael-carl/git-tui
 
 go 1.22.3
 
-replace github.com/libgit2/git2go/v36 => github.com/coveord/git2go/v36 v36.0.0
+replace github.com/libgit2/git2go/v36 => github.com/mickael-carl/git2go/v36 v36.0.0-20250904205647-3f918dd0d0f4
 
 require (
 	github.com/alecthomas/chroma/v2 v2.13.0
