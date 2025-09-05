@@ -140,6 +140,19 @@ func NewErrorWindow(pages *tview.Pages, name string, err error) {
 			pages.RemovePage(name)
 		}).
 		SetBackgroundColor(tcell.ColorDarkRed)
+	modal.SetTitle("Error")
+	pages.AddPage(name, modal, true, true)
+}
+
+func NewWarningWindow(pages *tview.Pages, name string, err error) {
+	modal := tview.NewModal().
+		SetText(err.Error()).
+		AddButtons([]string{"OK"}).
+		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+			pages.RemovePage(name)
+		}).
+		SetBackgroundColor(tcell.ColorDarkOrange)
+	modal.SetTitle("Warning")
 	pages.AddPage(name, modal, true, true)
 }
 

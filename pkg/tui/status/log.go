@@ -15,8 +15,7 @@ import (
 func (s *statusPage) log() {
 	url, err := s.state.Repository.RemoteHTTPURL()
 	if err != nil {
-		util.NewErrorWindow(s.state.Pages, "status-log-err", fmt.Errorf("Failed to get repository remote HTTP URL: %v", err))
-		return
+		util.NewWarningWindow(s.state.Pages, "status-log-err", fmt.Errorf("Failed to get repository remote HTTP URL: %v", err))
 	}
 
 	textView := tview.NewTextView().SetDynamicColors(true)
