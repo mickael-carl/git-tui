@@ -156,6 +156,18 @@ func NewWarningWindow(pages *tview.Pages, name string, err error) {
 	pages.AddPage(name, modal, true, true)
 }
 
+func NewInfoWindow(pages *tview.Pages, name, message string) {
+	modal := tview.NewModal().
+		SetText(message).
+		AddButtons([]string{"OK"}).
+		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+			pages.RemovePage(name)
+		}).
+		SetBackgroundColor(tcell.ColorDarkGreen)
+	modal.SetTitle("Info")
+	pages.AddPage(name, modal, true, true)
+}
+
 func (f *FloatingWindow) Show() {
 	f.pages.AddPage(
 		f.name,

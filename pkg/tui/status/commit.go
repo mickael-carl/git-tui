@@ -142,5 +142,5 @@ func (s *statusPage) push() {
 		util.NewErrorWindow(s.state.Pages, "status-push-err", fmt.Errorf("Failed to push: %v", err))
 	}
 
-	//TODO: needs success notification
+	util.NewInfoWindow(s.state.Pages, "status-push-ok", "Successfully pushed.")
 }
