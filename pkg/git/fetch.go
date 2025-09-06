@@ -6,7 +6,10 @@ import (
 	git "github.com/libgit2/git2go/v36"
 )
 
-func (r *Repository) Fetch() error {
+func (r *Repository) Fetch(done func(err error)) error {
+	var err error
+	defer done(err)
+
 	mainBranchDir := path.Join(repoPath(r.Name), r.Config.MainBranch)
 
 	repo, err := git.OpenRepository(mainBranchDir)

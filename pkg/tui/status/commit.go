@@ -138,9 +138,18 @@ func (s *statusPage) xxx() {
 }
 
 func (s *statusPage) push() {
-	if err := s.state.Repository.Push(s.state.Branch); err != nil {
-		util.NewErrorWindow(s.state.Pages, "status-push-err", fmt.Errorf("Failed to push: %v", err))
-	}
+	done := util.NewProgressWindow(s.state.Pages, "status-push-progress", "Pushing...")
 
-	util.NewInfoWindow(s.state.Pages, "status-push-ok", "Successfully pushed.")
+	// We can't call this outside of a goroutine: it will block the rendering,
+	// since this function is called as a handler for a keypress. So we need to
+	// move it into a goroutine, but also then give that goroutine the ability
+	// to close the progress window and handle errors (or no errors).
+	go s.state.Repository.Push(s.state.Branch, func(err error) {
+		done()
+		if err != nil {
+			util.NewErrorWindow(s.state.Pages, "status-push-err", fmt.Errorf("Failed to push: %v", err))
+		} else {
+			util.NewInfoWindow(s.state.Pages, "status-push-ok", "Successfully pushed.")
+		}
+	})
 }

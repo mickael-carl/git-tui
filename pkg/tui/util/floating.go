@@ -168,6 +168,17 @@ func NewInfoWindow(pages *tview.Pages, name, message string) {
 	pages.AddPage(name, modal, true, true)
 }
 
+func NewProgressWindow(pages *tview.Pages, name, message string) func() {
+	modal := tview.NewModal().
+		SetText(message).
+		SetBackgroundColor(tcell.ColorDarkGrey)
+	pages.AddPage(name, modal, true, true)
+
+	return func() {
+		pages.RemovePage(name)
+	}
+}
+
 func (f *FloatingWindow) Show() {
 	f.pages.AddPage(
 		f.name,

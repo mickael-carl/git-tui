@@ -6,7 +6,10 @@ import (
 	git "github.com/libgit2/git2go/v36"
 )
 
-func (r *Repository) Push(branch string) error {
+func (r *Repository) Push(branch string, done func(err error)) error {
+	var err error
+	defer done(err)
+
 	branchDir := BranchPath(branch, r.Name)
 
 	repo, err := git.OpenRepository(branchDir)

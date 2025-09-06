@@ -7,17 +7,18 @@ import (
 )
 
 func (b *branchesPage) fetch() {
-	fetchWindow := util.NewTextNotificationWindow(b.state.Pages, "fetch", "Fetching...")
-	fetchWindow.Show()
-	defer fetchWindow.Hide()
+	done := util.NewProgressWindow(b.state.Pages, "branches-fetch-progress", "Fetching...")
 
-	// TODO: this seems necessary, otherwise the page is just not displayed.
-	b.state.App.ForceDraw()
+	go b.state.Repository.Fetch(func(err error) {
+		done()
+		b.update()
 
-	if err := b.state.Repository.Fetch(); err != nil {
-		util.NewErrorWindow(b.state.Pages, "branches-fetch-err", fmt.Errorf("Failed to fetch remotes: %v", err))
-		return
-	}
+		// TODO: this seems necessary, otherwise the progress window is never
+		// removed.
+		b.state.App.Draw()
 
-	b.update()
+		if err != nil {
+			util.NewErrorWindow(b.state.Pages, "branches-fetch-err", fmt.Errorf("Failed to fetch remotes: %v", err))
+		}
+	})
 }
