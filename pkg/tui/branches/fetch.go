@@ -13,12 +13,12 @@ func (b *branchesPage) fetch() {
 		done()
 		b.update()
 
-		// TODO: this seems necessary, otherwise the progress window is never
-		// removed.
-		b.state.App.Draw()
-
 		if err != nil {
 			util.NewErrorWindow(b.state.Pages, "branches-fetch-err", fmt.Errorf("Failed to fetch remotes: %v", err))
 		}
+
+		// TODO: this seems necessary, otherwise the progress window is never
+		// removed.
+		b.state.App.Draw()
 	})
 }

@@ -6,27 +6,29 @@ import (
 	git "github.com/libgit2/git2go/v36"
 )
 
-func (r *Repository) Fetch(done func(err error)) error {
-	var err error
-	defer done(err)
-
+func (r *Repository) Fetch(done func(err error)) {
 	mainBranchDir := path.Join(repoPath(r.Name), r.Config.MainBranch)
 
 	repo, err := git.OpenRepository(mainBranchDir)
 	if err != nil {
-		return err
+		// TODO: defer done(err) doesn't seem to work, so we have to call it
+		// before returning everytime.
+		done(err)
+		return
 	}
 	defer repo.Free()
 
 	remotes, err := repo.Remotes.List()
 	if err != nil {
-		return err
+		done(err)
+		return
 	}
 
 	for _, remoteName := range remotes {
 		remote, err := repo.Remotes.Lookup(remoteName)
 		if err != nil {
-			return err
+			done(err)
+			return
 		}
 		defer remote.Free()
 
@@ -38,12 +40,15 @@ func (r *Repository) Fetch(done func(err error)) error {
 			RemoteCallbacks: remoteCallbacks,
 		}
 
-		if err := remote.Fetch([]string{}, options, ""); err != nil {
-			return err
+		err = remote.Fetch([]string{}, options, "")
+		if err != nil {
+			done(err)
+			return
 		}
 	}
 
-	return nil
+	done(nil)
+	return
 }
 
 func (r *Repository) credentialsCallback(url, usernameFromURL string, allowedTypes git.CredentialType) (*git.Credential, error) {
