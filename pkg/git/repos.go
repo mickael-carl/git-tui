@@ -54,7 +54,7 @@ func NewRepository(name, url, mainBranch, pubKeyPath, privateKeyPath string) err
 
 	_, err := os.Open(repoPath(name))
 	if err == nil {
-		return fmt.Errorf("repository %s already exists.", name)
+		return fmt.Errorf("repository %s already exists", name)
 	} else if err != nil && !os.IsNotExist(err) {
 		return err
 	}

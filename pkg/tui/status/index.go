@@ -21,6 +21,8 @@ import (
 )
 
 func (s *statusPage) add() {
+	fuzzyFind := true
+
 	textView := tview.NewTextView()
 	textView.SetBorder(true)
 	textViewElement := util.FlexElement{
@@ -29,7 +31,19 @@ func (s *statusPage) add() {
 	}
 
 	// TODO: create a form, with checkboxes for every file?
-	inputField := tview.NewInputField().SetPlaceholder("files:")
+	inputField := tview.NewInputField().SetPlaceholder("Fuzzy find (^A to switch)")
+	inputField.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		if event.Key() == tcell.KeyCtrlA {
+			if fuzzyFind {
+				fuzzyFind = false
+				inputField.SetPlaceholder("Exact match:")
+			} else {
+				fuzzyFind = true
+				inputField.SetPlaceholder("Fuzzy find:")
+			}
+		}
+		return event
+	})
 	inputFieldElement := util.FlexElement{
 		Primitive: inputField,
 		FixedSize: 1,
@@ -49,12 +63,16 @@ func (s *statusPage) add() {
 
 	inputField.SetChangedFunc(func(text string) {
 		changedFilesPaths := status.ChangedFilesPaths()
+		textView.SetText(strings.Join(changedFilesPaths, "\n"))
+		if fuzzyFind {
+			matched := fuzzy.Find(text, changedFilesPaths)
+			textView.SetText(strings.Join(matched, "\n"))
+			return
+		}
 		if slices.Contains(changedFilesPaths, text) {
 			textView.SetText(text)
 			return
 		}
-		matched := fuzzy.Find(text, changedFilesPaths)
-		textView.SetText(strings.Join(matched, "\n"))
 	})
 
 	inputField.SetDoneFunc(func(key tcell.Key) {
