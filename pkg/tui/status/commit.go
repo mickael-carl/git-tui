@@ -1,6 +1,7 @@
 package status
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"time"
@@ -22,6 +23,11 @@ func (s *statusPage) commit() {
 	message, err := util.ReadCommitMessage(s.state.App, tempfile.Name())
 	if err != nil {
 		util.NewErrorWindow(s.state.Pages, "status-commit-err", fmt.Errorf("Failed to read commit message: %v", err))
+		return
+	}
+
+	if message == "" {
+		util.NewWarningWindow(s.state.Pages, "status-commit-warn", errors.New("aborting commit: empty commit message"))
 		return
 	}
 
