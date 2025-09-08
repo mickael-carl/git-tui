@@ -61,6 +61,11 @@ func (s *statusPage) add() {
 
 	textView.SetText(strings.Join(status.ChangedFilesPaths(), "\n"))
 
+	inputField.SetAutocompleteFunc(func(currentText string) (entries []string) {
+		changedFilesPaths := status.ChangedFilesPaths()
+		return fuzzy.Find(currentText, changedFilesPaths)
+	})
+
 	inputField.SetChangedFunc(func(text string) {
 		changedFilesPaths := status.ChangedFilesPaths()
 		textView.SetText(strings.Join(changedFilesPaths, "\n"))
