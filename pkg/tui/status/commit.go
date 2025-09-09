@@ -157,5 +157,8 @@ func (s *statusPage) push() {
 		} else {
 			util.NewInfoWindow(s.state.Pages, "status-push-ok", "Successfully pushed.")
 		}
+		// TODO: this seems necessary, otherwise the progress window is never
+		// removed.
+		s.state.App.Draw()
 	})
 }

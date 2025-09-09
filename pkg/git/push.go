@@ -6,15 +6,13 @@ import (
 	git "github.com/libgit2/git2go/v36"
 )
 
-func (r *Repository) Push(branch string, done func(err error)) error {
-	var err error
-	defer done(err)
-
+func (r *Repository) Push(branch string, done func(err error)) {
 	branchDir := BranchPath(branch, r.Name)
 
 	repo, err := git.OpenRepository(branchDir)
 	if err != nil {
-		return err
+		done(err)
+		return
 	}
 	defer repo.Free()
 
@@ -23,7 +21,8 @@ func (r *Repository) Push(branch string, done func(err error)) error {
 	// really contain information about remotes.
 	remote, err := repo.Remotes.Lookup("origin")
 	if err != nil {
-		return err
+		done(err)
+		return
 	}
 	defer remote.Free()
 
@@ -35,8 +34,10 @@ func (r *Repository) Push(branch string, done func(err error)) error {
 		RemoteCallbacks: remoteCallbacks,
 	}
 
-	return remote.Push(
+	err = remote.Push(
 		[]string{fmt.Sprintf("refs/heads/%s:refs/heads/%s", branch, branch)},
 		pushOptions,
 	)
+	done(err)
+	return
 }
